@@ -39,13 +39,16 @@ export default function Board({
   // Load legal words (dictionary)
   const [words, setWords] = useState<string[]>([]);
   console.log(`words: ${words.length}`);
-  console.log(`vercel live: ${process.env.VERCEL_LIVE}`);
+  console.log(`LIVE_PRODUCTION: ${process.env.LIVE_PRODUCTION}`);
+  console.log(`VERCEL: ${process.env.VERCEL}`);
+  console.log(`VERCEL_URL: ${process.env.VERCEL_URL}`);
+  console.log(`NEXT_PUBLIC_VERCEL_URL: ${process.env.NEXT_PUBLIC_VERCEL_URL}`);
 
   useEffect(() => {
     fetch("/words.txt")
       .then((res) => res.text())
       .then((text) => {
-        if (process.env.VERCEL_LIVE) setWords(text.split("\n").slice(0, -1));
+        if (process.env.VERCEL_URL) setWords(text.split("\n").slice(0, -1));
         else setWords(text.split("\r\n").slice(0, -1));
       });
   }, []);
