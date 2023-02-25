@@ -20,12 +20,25 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (gameStatus !== "progress") {
+      alert(`${gameStatus}, reloading`);
+      disableInput();
+
+      setTimeout(() => {
+        setPrevGuesses([]);
+        setGameStatus("progress");
+        generateAnswer(5); // TODO: Generate answer from level
+        enableInput();
+      }, 3000);
+    }
+  }, [gameStatus, disableInput, enableInput, generateAnswer]);
+
   function handleAddGuess(guess: string) {
-    if (guess === answer) {
-      setGameStatus("win");
-      setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
-    } else if (prevGuesses.length === numGuesses - 1) setGameStatus("lose");
-    else setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
+    if (guess === answer) setGameStatus("win");
+    else if (prevGuesses.length === numGuesses - 1) setGameStatus("lose");
+
+    setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
   }
 
   return (
@@ -43,6 +56,7 @@ export default function Home() {
           resetGuess={resetGuess}
           enableInput={enableInput}
           disableInput={disableInput}
+          gameStatus={gameStatus}
         />
       </main>
       <p>Answer: {answer}</p>

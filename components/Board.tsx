@@ -12,7 +12,10 @@ interface BoardProps {
   resetGuess: () => void;
   enableInput: () => void;
   disableInput: () => void;
+  gameStatus: GameStatus;
 }
+
+type GameStatus = "progress" | "win" | "lose";
 
 type RowStatus =
   | "building"
@@ -29,6 +32,7 @@ export default function Board({
   resetGuess,
   enableInput,
   disableInput,
+  gameStatus,
 }: BoardProps) {
   const { answer } = useAnswer();
 
@@ -82,7 +86,12 @@ export default function Board({
 
   const handleEnter = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key !== "Enter" || currentRowStatus === "animating") return;
+      if (
+        e.key !== "Enter" ||
+        currentRowStatus !== "building" ||
+        gameStatus !== "progress"
+      )
+        return;
       disableInput();
 
       if (currentGuess.length < answer.length) {
@@ -93,14 +102,21 @@ export default function Board({
 
       setCurrentRowStatus("processing");
     },
-    [currentRowStatus, currentGuess, answer, disableInput, enableInput]
+    [
+      currentRowStatus,
+      currentGuess,
+      answer,
+      disableInput,
+      enableInput,
+      gameStatus,
+    ]
   );
 
   // Handle submitting guess
   useEffect(() => {
-    window.addEventListener("keydown", handleEnter);
+    window.addEventListener("keydown", handleEnter, true);
 
-    return () => window.removeEventListener("keydown", handleEnter);
+    return () => window.removeEventListener("keydown", handleEnter, true);
   }, [handleEnter]);
 
   return (
