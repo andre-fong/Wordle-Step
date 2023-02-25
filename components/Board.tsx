@@ -1,7 +1,7 @@
 import styles from "@/styles/Board.module.scss";
 import Row from "@/components/Row";
 import { useAnswer } from "@/components/AnswerContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface BoardProps {
@@ -80,25 +80,28 @@ export default function Board({
     }, 1000);
   }
 
-  function handleEnter(e: KeyboardEvent) {
-    if (e.key !== "Enter" || currentRowStatus === "animating") return;
-    disableInput();
+  const handleEnter = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key !== "Enter" || currentRowStatus === "animating") return;
+      disableInput();
 
-    if (currentGuess.length < answer.length) {
-      handleInvalidGuess("Not enough letters");
-      enableInput();
-      return;
-    }
+      if (currentGuess.length < answer.length) {
+        handleInvalidGuess("Not enough letters");
+        enableInput();
+        return;
+      }
 
-    setCurrentRowStatus("processing");
-  }
+      setCurrentRowStatus("processing");
+    },
+    [currentRowStatus, currentGuess, answer, disableInput, enableInput]
+  );
 
   // Handle submitting guess
   useEffect(() => {
     window.addEventListener("keydown", handleEnter);
 
     return () => window.removeEventListener("keydown", handleEnter);
-  });
+  }, [handleEnter]);
 
   return (
     <div className={styles.rows}>
