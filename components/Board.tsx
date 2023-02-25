@@ -43,7 +43,8 @@ export default function Board({
     fetch("/words.txt")
       .then((res) => res.text())
       .then((text) => {
-        setWords(text.split("\r\n").slice(0, -1));
+        if (process.env.VERCEL_LIVE) setWords(text.split("\n").slice(0, -1));
+        else setWords(text.split("\r\n").slice(0, -1));
       });
   }, []);
 
