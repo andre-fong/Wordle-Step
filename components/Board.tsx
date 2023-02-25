@@ -40,7 +40,7 @@ export default function Board({
   const [words, setWords] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("words.txt")
+    fetch("/words.txt")
       .then((res) => res.text())
       .then((text) => {
         setWords(text.split("\r\n").slice(0, -1));
