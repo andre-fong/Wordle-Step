@@ -38,6 +38,8 @@ export default function Board({
 
   // Load legal words (dictionary)
   const [words, setWords] = useState<string[]>([]);
+  console.log(`words: ${words.length}`);
+  console.log(`vercel live: ${process.env.VERCEL_LIVE}`);
 
   useEffect(() => {
     fetch("/words.txt")
