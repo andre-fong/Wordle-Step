@@ -59,7 +59,7 @@ export default function Board({
           setCurrentRowStatus("building");
           resetGuess();
           enableInput();
-        }, 1800);
+        }, 1900);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
