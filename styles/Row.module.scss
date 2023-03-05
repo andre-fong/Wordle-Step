@@ -82,7 +82,7 @@
 }
 
 .wrong, .correct, .inaccurate {
-  animation-timing-function: ease-out;
+  animation-timing-function: ease-in;
 }
 .wrong {
   animation: reveal-wrong 0.6s forwards;

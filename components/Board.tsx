@@ -15,7 +15,7 @@ interface BoardProps {
   gameStatus: GameStatus;
 }
 
-type GameStatus = "progress" | "win" | "lose";
+type GameStatus = "progress" | "win" | "lose" | "end";
 
 type RowStatus =
   | "building"
@@ -55,7 +55,10 @@ export default function Board({
   useEffect(() => {
     if (currentRowStatus === "processing") {
       // Check if word is in word list with dictionary APi
-      if (!words.includes(currentGuess)) {
+      if (words.length === 0) {
+        handleInvalidGuess("Loading word list");
+        enableInput();
+      } else if (!words.includes(currentGuess)) {
         handleInvalidGuess("Not in word list");
         enableInput();
       } else {
@@ -65,7 +68,7 @@ export default function Board({
           setCurrentRowStatus("building");
           resetGuess();
           enableInput();
-        }, 1900);
+        }, (answer.length - 1) * 300 + 700); // 300ms delay per letter + 700ms for animation
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,7 +77,7 @@ export default function Board({
   function handleInvalidGuess(message: string) {
     toast.warning(message, {
       position: "top-center",
-      autoClose: 1000,
+      autoClose: 600,
       hideProgressBar: true,
       pauseOnHover: false,
       style: { background: "black", color: "white" },
@@ -83,7 +86,7 @@ export default function Board({
     setCurrentRowStatus("invalid");
     setTimeout(() => {
       setCurrentRowStatus("building");
-    }, 1000);
+    }, 600);
   }
 
   const handleEnter = useCallback(
@@ -94,6 +97,7 @@ export default function Board({
         gameStatus !== "progress"
       )
         return;
+
       disableInput();
 
       if (currentGuess.length < answer.length) {

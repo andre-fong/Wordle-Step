@@ -4,35 +4,63 @@ import Board from "@/components/Board";
 import { useState, useEffect } from "react";
 import useKeyboardInput from "@/utils/useKeyboardInput";
 import { useAnswer } from "@/components/AnswerContext";
+import { gameConfig } from "@/utils/gameConfig";
 
-type GameStatus = "progress" | "win" | "lose";
+type GameStatus = "progress" | "win" | "lose" | "end";
+type GameLength = "short" | "medium" | "long";
 
 export default function Home() {
-  const numGuesses = 6;
-  const { guess, resetGuess, enableInput, disableInput } = useKeyboardInput(5); // TODO: Limit keyboard from level, not answer
+  const [gameLength, setGameLength] = useState<GameLength>("short");
+  const startingLength: number = parseInt(
+    Object.keys(gameConfig[gameLength])[0]
+  );
+  const [answerLength, setAnswerLength] = useState<number>(startingLength);
+  const [numGuesses, setNumGuesses] = useState<number>(
+    gameConfig[gameLength][answerLength] || 0
+  );
+  const { guess, resetGuess, enableInput, disableInput } =
+    useKeyboardInput(answerLength);
   const [prevGuesses, setPrevGuesses] = useState<string[]>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>("progress");
 
   const { answer, generateAnswer } = useAnswer();
+
+  // Reset board state and generate new answer when answer length changes
   useEffect(() => {
-    generateAnswer(5); // TODO: Generate answer from level
+    if (answerLength === -1) setAnswerLength(startingLength);
+    else if (gameConfig[gameLength][answerLength] === undefined) {
+      // Game cleared
+      setGameStatus("end");
+    } else {
+      setPrevGuesses([]);
+      setGameStatus("progress");
+      generateAnswer(answerLength);
+      setNumGuesses(gameConfig[gameLength][answerLength] || 0);
+      enableInput();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [answerLength]);
 
+  // Handle game ending (lose or win)
   useEffect(() => {
-    if (gameStatus !== "progress") {
-      alert(`${gameStatus}, reloading`);
+    if (gameStatus === "end") {
       disableInput();
+      alert("You win! Reload to restart.");
+    } else if (gameStatus !== "progress") {
+      disableInput();
+      alert(gameStatus === "win" ? "Round won!" : "Game lost! Restarting...");
 
       setTimeout(() => {
-        setPrevGuesses([]);
-        setGameStatus("progress");
-        generateAnswer(5); // TODO: Generate answer from level
-        enableInput();
-      }, 3000);
+        // Increase or restart answer length depending on win/lose
+        setAnswerLength((answerLength) =>
+          gameStatus === "win" ? answerLength + 1 : -1
+        );
+      }, 1500);
     }
-  }, [gameStatus, disableInput, enableInput, generateAnswer]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameStatus]);
 
   function handleAddGuess(guess: string) {
     if (guess === answer) setGameStatus("win");

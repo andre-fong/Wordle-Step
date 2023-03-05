@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useCallback } from "react";
 import rw from "random-words";
 
 interface AnswerContextProps {
@@ -21,7 +21,7 @@ export default function AnswerProvider({ children }: AnswerProviderProps) {
   const [answer, setAnswer] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  function generateAnswer(length: number) {
+  const generateAnswer = useCallback((length: number) => {
     let correctLength = false;
     let randomWord = "";
     let iterations = 0;
@@ -37,7 +37,7 @@ export default function AnswerProvider({ children }: AnswerProviderProps) {
     }
     setLoading(false);
     setAnswer(randomWord);
-  }
+  }, []);
 
   return (
     <AnswerContext.Provider value={{ answer, loading, generateAnswer }}>
