@@ -1,6 +1,7 @@
 import styles from "@/styles/Row.module.scss";
 import { useAnswer } from "@/components/AnswerContext";
 import { useEffect } from "react";
+import useScreenSize from "@/utils/useScreenSize";
 
 type RowStatus =
   | "building"
@@ -18,6 +19,7 @@ interface RowProps {
 
 export default function Row({ status, rowWord, length }: RowProps) {
   const { answer } = useAnswer();
+  const { width, height } = useScreenSize();
 
   // Animate each box to reveal the word
   useEffect(() => {
@@ -125,10 +127,25 @@ export default function Row({ status, rowWord, length }: RowProps) {
     else return styles.row;
   }
 
+  function handleBoxSize(wordLength: number): number {
+    if (!width || !wordLength) return 50;
+
+    const maxBoxSize = (width - 15) / wordLength - 5;
+    return Math.min(maxBoxSize, 52);
+  }
+
   return (
     <div className={handleRowClass()}>
       {Array.from(Array(length).keys()).map((i: number) => (
-        <div className={handleBoxClass(i)} key={i}>
+        <div
+          className={handleBoxClass(i)}
+          style={{
+            width: handleBoxSize(answer.length),
+            height: handleBoxSize(answer.length),
+            fontSize: (handleBoxSize(answer.length) * 2) / 3,
+          }}
+          key={i}
+        >
           {rowWord[i]?.toUpperCase() || ""}
         </div>
       ))}
