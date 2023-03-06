@@ -13,17 +13,19 @@ export default function useScreenSize() {
 
   useEffect(() => {
     function handleResize() {
+      console.log(window.innerWidth);
+
       setSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, true);
 
     handleResize();
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize, true);
   }, []);
 
   return size;

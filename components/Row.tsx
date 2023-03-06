@@ -1,7 +1,6 @@
 import styles from "@/styles/Row.module.scss";
 import { useAnswer } from "@/components/AnswerContext";
 import { useEffect } from "react";
-import useScreenSize from "@/utils/useScreenSize";
 
 type RowStatus =
   | "building"
@@ -15,11 +14,18 @@ interface RowProps {
   status: RowStatus;
   rowWord: string;
   length: number;
+  onGuessCalculation: (guessAccuracy: BoxStatus[]) => void;
+  screenWidth: number | undefined;
 }
 
-export default function Row({ status, rowWord, length }: RowProps) {
+export default function Row({
+  status,
+  rowWord,
+  length,
+  onGuessCalculation,
+  screenWidth,
+}: RowProps) {
   const { answer } = useAnswer();
-  const { width, height } = useScreenSize();
 
   // Animate each box to reveal the word
   useEffect(() => {
@@ -101,6 +107,8 @@ export default function Row({ status, rowWord, length }: RowProps) {
 
     console.log(statuses);
 
+    onGuessCalculation(Object.values(statuses) as BoxStatus[]);
+
     return Object.keys(statuses).map((key) => statuses[parseInt(key)]);
   }
 
@@ -128,9 +136,9 @@ export default function Row({ status, rowWord, length }: RowProps) {
   }
 
   function handleBoxSize(wordLength: number): number {
-    if (!width || !wordLength) return 50;
+    if (!screenWidth || !wordLength) return 50;
 
-    const maxBoxSize = (width - 15) / wordLength - 5;
+    const maxBoxSize = (screenWidth - 15) / wordLength - 5;
     return Math.min(maxBoxSize, 52);
   }
 
@@ -142,7 +150,7 @@ export default function Row({ status, rowWord, length }: RowProps) {
           style={{
             width: handleBoxSize(answer.length),
             height: handleBoxSize(answer.length),
-            fontSize: (handleBoxSize(answer.length) * 2) / 3,
+            fontSize: handleBoxSize(answer.length) * 0.6,
           }}
           key={i}
         >

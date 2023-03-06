@@ -1,0 +1,55 @@
+@import "@/styles/variables.scss";
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.key, .one_half_key {
+  width: 40px;
+  height: calc(40px * 1.4);
+  min-width: 12px;
+  background-color: lightgray;
+  border: 0;
+  margin: 0;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: calc(40px * 0.45);
+  cursor: pointer;
+  padding: 0;
+}
+.key:active, .one_half_key:active {
+  filter: brightness(0.9);
+}
+.one_half_key {
+  width: 40px * 3/2 + 3px;
+  font-size: 18px * 2/3;
+  min-width: 30px;
+}
+
+.gray, .green, .yellow {
+  color: white;
+}
+.gray {
+  background-color: gray;
+}
+.green {
+  background-color: $green;
+}
+.yellow {
+  background-color: $yellow;
+}

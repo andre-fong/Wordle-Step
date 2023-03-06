@@ -1,8 +1,10 @@
 import styles from "@/styles/Board.module.scss";
 import Row from "@/components/Row";
+import Keyboard from "@/components/Keyboard";
 import { useAnswer } from "@/components/AnswerContext";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useScreenSize from "@/utils/useScreenSize";
 
 interface BoardProps {
   numGuesses: number;
@@ -24,6 +26,8 @@ type RowStatus =
   | "animating"
   | "finished";
 
+type BoxStatus = "correct" | "wrong" | "inaccurate";
+
 export default function Board({
   numGuesses,
   currentGuess,
@@ -38,6 +42,10 @@ export default function Board({
 
   // Load legal words (dictionary)
   const [words, setWords] = useState<string[]>([]);
+
+  const [guessAccuracy, setGuessAccuracy] = useState<BoxStatus[]>([]);
+
+  const { width, height } = useScreenSize();
 
   useEffect(() => {
     fetch("/words.txt")
@@ -118,6 +126,10 @@ export default function Board({
     ]
   );
 
+  function transferGuessCalculation(guessAccuracy: BoxStatus[]) {
+    setGuessAccuracy(guessAccuracy);
+  }
+
   // Handle submitting guess
   useEffect(() => {
     window.addEventListener("keydown", handleEnter, true);
@@ -126,33 +138,52 @@ export default function Board({
   }, [handleEnter]);
 
   return (
-    <div className={styles.rows}>
-      {Array.from(Array(numGuesses).keys()).map((i: number) => {
-        const currentRow = prevGuesses.length;
+    <>
+      <div className={styles.rows}>
+        {Array.from(Array(numGuesses).keys()).map((i: number) => {
+          const currentRow = prevGuesses.length;
 
-        if (i < currentRow)
-          return (
-            <Row
-              status="finished"
-              rowWord={prevGuesses[i]}
-              length={answer.length}
-              key={i}
-            />
-          );
-        else if (i === currentRow)
-          return (
-            <Row
-              status={currentRowStatus}
-              rowWord={currentGuess}
-              length={answer.length}
-              key={i}
-            />
-          );
-        else
-          return (
-            <Row status="building" rowWord="" length={answer.length} key={i} />
-          );
-      })}
-    </div>
+          if (i < currentRow)
+            return (
+              <Row
+                status="finished"
+                rowWord={prevGuesses[i]}
+                length={answer.length}
+                key={i}
+                onGuessCalculation={transferGuessCalculation}
+                screenWidth={width}
+              />
+            );
+          else if (i === currentRow)
+            return (
+              <Row
+                status={currentRowStatus}
+                rowWord={currentGuess}
+                length={answer.length}
+                key={i}
+                onGuessCalculation={transferGuessCalculation}
+                screenWidth={width}
+              />
+            );
+          else
+            return (
+              <Row
+                status="building"
+                rowWord=""
+                length={answer.length}
+                key={i}
+                onGuessCalculation={transferGuessCalculation}
+                screenWidth={width}
+              />
+            );
+        })}
+      </div>
+
+      <Keyboard
+        prevGuesses={prevGuesses}
+        currentGuessAccuracy={guessAccuracy}
+        screenWidth={width}
+      />
+    </>
   );
 }
