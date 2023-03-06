@@ -13,11 +13,11 @@ export default function useScreenSize() {
 
   useEffect(() => {
     function handleResize() {
-      console.log(window.innerWidth);
+      console.log(Math.min(window.innerWidth, window.outerWidth));
 
       setSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: Math.min(window.innerWidth, window.outerWidth),
+        height: Math.min(window.innerHeight, window.outerHeight),
       });
     }
 
