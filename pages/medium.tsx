@@ -8,11 +8,11 @@ import { gameConfig } from "@/utils/gameConfig";
 
 type GameStatus = "progress" | "win" | "lose" | "end";
 
-export default function Home() {
-  const startingLength: number = parseInt(Object.keys(gameConfig["short"])[0]);
+export default function Medium() {
+  const startingLength: number = parseInt(Object.keys(gameConfig["medium"])[0]);
   const [answerLength, setAnswerLength] = useState<number>(startingLength);
   const [numGuesses, setNumGuesses] = useState<number>(
-    gameConfig["short"][answerLength] || 0
+    gameConfig["medium"][answerLength] || 0
   );
   const { guess, resetGuess, enableInput, disableInput } =
     useKeyboardInput(answerLength);
@@ -24,14 +24,14 @@ export default function Home() {
   // Reset board state and generate new answer when answer length changes
   useEffect(() => {
     if (answerLength === -1) setAnswerLength(startingLength);
-    else if (gameConfig["short"][answerLength] === undefined) {
+    else if (gameConfig["medium"][answerLength] === undefined) {
       // Game cleared
       setGameStatus("end");
     } else {
       setPrevGuesses([]);
       setGameStatus("progress");
       generateAnswer(answerLength);
-      setNumGuesses(gameConfig["short"][answerLength] || 0);
+      setNumGuesses(gameConfig["medium"][answerLength] || 0);
       enableInput();
     }
 
@@ -68,7 +68,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Wordle Step Classic</title>
+        <title>Wordle Step Medium</title>
       </Head>
 
       <main className={styles.content}>
