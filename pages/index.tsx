@@ -18,6 +18,7 @@ export default function Home() {
     useKeyboardInput(answerLength);
   const [prevGuesses, setPrevGuesses] = useState<string[]>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>("progress");
+  const [extraGuesses, setExtraGuesses] = useState<number>(0);
 
   const { answer, generateAnswer } = useAnswer();
 
@@ -52,6 +53,12 @@ export default function Home() {
         setAnswerLength((answerLength) =>
           gameStatus === "win" ? answerLength + 1 : -1
         );
+        // Set extra guesses depending if lost or won round
+        if (gameStatus === "win")
+          setExtraGuesses(
+            (prevExtra) => numGuesses + prevExtra - prevGuesses.length
+          );
+        else if (gameStatus === "lose") setExtraGuesses(0);
       }, 1500);
     }
 
@@ -60,7 +67,8 @@ export default function Home() {
 
   function handleAddGuess(guess: string) {
     if (guess === answer) setGameStatus("win");
-    else if (prevGuesses.length === numGuesses - 1) setGameStatus("lose");
+    else if (prevGuesses.length === numGuesses - 1 + extraGuesses)
+      setGameStatus("lose");
 
     setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
   }
@@ -74,6 +82,7 @@ export default function Home() {
       <main className={styles.content}>
         <Board
           numGuesses={numGuesses}
+          extraGuesses={extraGuesses}
           currentGuess={guess}
           prevGuesses={prevGuesses}
           addGuess={handleAddGuess}

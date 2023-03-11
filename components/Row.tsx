@@ -16,6 +16,7 @@ interface RowProps {
   length: number;
   onGuessCalculation: (guessAccuracy: BoxStatus[]) => void;
   screenWidth: number | undefined;
+  extra: boolean;
 }
 
 export default function Row({
@@ -24,6 +25,7 @@ export default function Row({
   length,
   onGuessCalculation,
   screenWidth,
+  extra,
 }: RowProps) {
   const { answer } = useAnswer();
 
@@ -130,9 +132,13 @@ export default function Row({
   }
 
   function handleRowClass(): string {
-    if (status === "invalid") return `${styles.row} ${styles.shake}`;
-    else if (status === "animating") return `${styles.row} animating`;
-    else return styles.row;
+    let rowClass = `${styles.row} `;
+    if (status === "invalid") rowClass += styles.shake;
+    else if (status === "animating") rowClass += "animating";
+
+    if (extra) rowClass += ` ${styles.extra}`;
+
+    return rowClass;
   }
 
   function handleBoxSize(wordLength: number): number {

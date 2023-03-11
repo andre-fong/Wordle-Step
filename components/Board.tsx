@@ -8,6 +8,7 @@ import useScreenSize from "@/utils/useScreenSize";
 
 interface BoardProps {
   numGuesses: number;
+  extraGuesses: number;
   currentGuess: string;
   prevGuesses: string[];
   addGuess: (guess: string) => void;
@@ -30,6 +31,7 @@ type BoxStatus = "correct" | "wrong" | "inaccurate";
 
 export default function Board({
   numGuesses,
+  extraGuesses,
   currentGuess,
   prevGuesses,
   addGuess,
@@ -140,43 +142,48 @@ export default function Board({
   return (
     <>
       <div className={styles.rows}>
-        {Array.from(Array(numGuesses).keys()).map((i: number) => {
-          const currentRow = prevGuesses.length;
+        {Array.from(Array(numGuesses + extraGuesses).keys()).map(
+          (i: number) => {
+            const currentRow = prevGuesses.length;
 
-          if (i < currentRow)
-            return (
-              <Row
-                status="finished"
-                rowWord={prevGuesses[i]}
-                length={answer.length}
-                key={i}
-                onGuessCalculation={transferGuessCalculation}
-                screenWidth={width}
-              />
-            );
-          else if (i === currentRow)
-            return (
-              <Row
-                status={currentRowStatus}
-                rowWord={currentGuess}
-                length={answer.length}
-                key={i}
-                onGuessCalculation={transferGuessCalculation}
-                screenWidth={width}
-              />
-            );
-          else
-            return (
-              <Row
-                status="building"
-                rowWord=""
-                length={answer.length}
-                key={i}
-                onGuessCalculation={transferGuessCalculation}
-                screenWidth={width}
-              />
-            );
-        })}
+            if (i < currentRow)
+              return (
+                <Row
+                  status="finished"
+                  rowWord={prevGuesses[i]}
+                  length={answer.length}
+                  key={i}
+                  onGuessCalculation={transferGuessCalculation}
+                  screenWidth={width}
+                  extra={i >= numGuesses}
+                />
+              );
+            else if (i === currentRow)
+              return (
+                <Row
+                  status={currentRowStatus}
+                  rowWord={currentGuess}
+                  length={answer.length}
+                  key={i}
+                  onGuessCalculation={transferGuessCalculation}
+                  screenWidth={width}
+                  extra={i >= numGuesses}
+                />
+              );
+            else
+              return (
+                <Row
+                  status="building"
+                  rowWord=""
+                  length={answer.length}
+                  key={i}
+                  onGuessCalculation={transferGuessCalculation}
+                  screenWidth={width}
+                  extra={i >= numGuesses}
+                />
+              );
+          }
+        )}
       </div>
 
       <Keyboard

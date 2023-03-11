@@ -6,6 +6,12 @@
   flex-direction: row;
 }
 
+.extra {
+  // Green box shadow that shows from the left and right border
+  box-shadow: 0 0 20px $green;
+  clip-path: inset(1px -15px 0px -15px);
+}
+
 .shake {
   // Animation that shakes the row
   animation: shake 0.5s ease;
