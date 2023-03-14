@@ -10,7 +10,7 @@ type GameLength = "short" | "medium" | "long";
 
 export default function Header() {
   const router = useRouter();
-  const gameLength = router.pathname.slice(1) || "short";
+  const gameLength = router.pathname.slice(1);
   const isValidGameLength = ["short", "medium", "long"].includes(gameLength);
 
   const { width } = useScreenSize();
@@ -43,7 +43,7 @@ export default function Header() {
 
   function handleNextGameLength() {
     if (gameLength === "medium") router.push("/long");
-    else if (gameLength === "long") router.push("/");
+    else if (gameLength === "long") router.push("/short");
     else if (gameLength === "short") router.push("/medium");
     else router.push("/");
   }
@@ -61,9 +61,7 @@ export default function Header() {
     <header className={styles.content}>
       {!isValidGameLength ? (
         <div className={styles.title_container}>
-          <Link href="/">
-            <h1 className={styles.title}>Wordle Step</h1>
-          </Link>
+          <h1 className={styles.title}>Wordle Step</h1>
         </div>
       ) : width && width <= 300 ? (
         <>

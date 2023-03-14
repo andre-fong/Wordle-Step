@@ -1,216 +1,87 @@
+import { useEffect } from "react";
+import styles from "@/styles/Welcome.module.scss";
 import Head from "next/head";
-import styles from "@/styles/Home.module.scss";
-import Board from "@/components/Board";
-import { useState, useEffect } from "react";
-import useKeyboardInput from "@/utils/useKeyboardInput";
-import { useAnswer } from "@/components/AnswerContext";
-import { gameConfig } from "@/utils/gameConfig";
-import BackgroundBlur from "@/components/BackgroundBlur";
-import modalStyles from "@/styles/BackgroundBlur.module.scss";
+import Link from "next/link";
 
-type GameStatus = "progress" | "win" | "lose" | "end";
-
-export default function Home() {
-  const startingLength: number = parseInt(Object.keys(gameConfig["short"])[0]);
-  const [answerLength, setAnswerLength] = useState<number>(startingLength);
-  const [numGuesses, setNumGuesses] = useState<number>(
-    gameConfig["short"][answerLength] || 0
-  );
-  const { guess, resetGuess, enableInput, disableInput } =
-    useKeyboardInput(answerLength);
-  const [prevGuesses, setPrevGuesses] = useState<string[]>([]);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("progress");
-  const [extraGuesses, setExtraGuesses] = useState<number>(0);
-  const [bonusDisplayed, setBonusDisplayed] = useState<number>(0);
-  const [stageDisplayed, setStageDisplayed] = useState<number>(1);
-
-  const { answer, generateAnswer } = useAnswer();
-
-  const [showRoundWinModal, setShowRoundWinModal] = useState<boolean>(false);
-  const [showGameWinModal, setShowGameWinModal] = useState<boolean>(false);
-  const [showGameLoseModal, setShowGameLoseModal] = useState<boolean>(false);
-
-  // Reset board state and generate new answer when answer length changes
+export default function Welcome() {
   useEffect(() => {
-    if (answerLength === -1) setAnswerLength(startingLength);
-    else if (gameConfig["short"][answerLength] === undefined) {
-      // Game cleared
-      setGameStatus("end");
-    } else {
-      setPrevGuesses([]);
-      setGameStatus("progress");
-      generateAnswer(answerLength);
-      setNumGuesses(gameConfig["short"][answerLength] || 0);
-      enableInput();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answerLength]);
-
-  // Handle game ending (lose or win)
-  useEffect(() => {
-    if (gameStatus === "end") {
-      disableInput();
-      setStageDisplayed((prevStage) => prevStage + 1);
-      setShowGameWinModal(true);
-    } else if (gameStatus !== "progress") {
-      disableInput();
-
-      // Get current level
-      const levels = Object.keys(gameConfig.short).map((key) => parseInt(key));
-      const answerLength = answer.length;
-      setStageDisplayed(
-        levels.findIndex((level) => level === answerLength) + 1
-      );
-
-      if (gameStatus === "win") {
-        setShowRoundWinModal(true);
-        setBonusDisplayed(numGuesses + extraGuesses - prevGuesses.length);
-      } else if (gameStatus === "lose") {
-        setShowGameLoseModal(true);
-        setBonusDisplayed(0);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameStatus]);
-
-  // Focus buttons when modal opens
-  useEffect(() => {
-    if (showRoundWinModal)
-      document.getElementById("next_stage_button")?.focus();
-    if (showGameLoseModal) document.getElementById("retry_button")?.focus();
-    if (showGameWinModal) document.getElementById("restart_button")?.focus();
-  }, [showRoundWinModal, showGameLoseModal, showGameWinModal]);
-
-  // Handle round win and close modal clicked
-  function handleRoundEnd() {
-    // Increase answer length and set extra guesses
-    setExtraGuesses((prevExtra) => numGuesses + prevExtra - prevGuesses.length);
-    setAnswerLength((answerLength) => answerLength + 1);
-  }
-
-  // Handle game lose and close modal clicked
-  function handleGameLose() {
-    setStageDisplayed(1);
-    setExtraGuesses(0);
-    setAnswerLength(-1);
-  }
-
-  function handleAddGuess(guess: string) {
-    if (guess === answer) {
-      setGameStatus(
-        gameConfig.short[answerLength + 1] === undefined ? "end" : "win"
-      );
-    } else if (prevGuesses.length === numGuesses - 1 + extraGuesses)
-      setGameStatus("lose");
-
-    setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
-  }
+    const letters = document.querySelectorAll(`.${styles.letter}`);
+    const lettersArray = Array.from(letters);
+    lettersArray.forEach((letter, i) => {
+      setTimeout(() => {
+        letter.classList.add(styles.correct);
+      }, 200 * i);
+    });
+  });
 
   return (
     <>
       <Head>
-        <title>Wordle Step Classic</title>
+        <title>Wordle Step - Home</title>
       </Head>
 
-      <BackgroundBlur
-        header="nice!"
-        open={showRoundWinModal}
-        setOpen={(open: boolean) => {
-          setShowRoundWinModal(open);
-        }}
-        color="yellow"
-      >
-        <div className={modalStyles.body}>
-          <p
-            className={modalStyles.bonus}
-            style={{ visibility: bonusDisplayed ? "inherit" : "hidden" }}
-          >
-            +{bonusDisplayed} bonus guess{bonusDisplayed === 1 ? "" : "es"}
-          </p>
-          <button
-            className={modalStyles.next_stage}
-            disabled={!showRoundWinModal}
-            onClick={() => {
-              setShowRoundWinModal(false);
-              handleRoundEnd();
-            }}
-            id="next_stage_button"
-          >
-            Stage {stageDisplayed + 1}
-          </button>
-        </div>
-      </BackgroundBlur>
-
-      <BackgroundBlur
-        header="fail"
-        open={showGameLoseModal}
-        setOpen={(open: boolean) => {
-          setShowGameLoseModal(open);
-        }}
-        color="gray"
-      >
-        <div className={modalStyles.body}>
-          <h2 className={modalStyles.short}>Short</h2>
-          <h3 className={modalStyles.stage}>
-            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
+      <div className={styles.content}>
+        <div className={styles.section}>
+          <h1 className={styles.title}>How To Play</h1>
+          <h3 className={styles.subtitle}>
+            Guess the Wordle(s) in 6 tries or less... or more?
           </h3>
-          <div className={modalStyles.fail_stats}>
-            <p className={modalStyles.stat}>Answer: {answer}</p>
+          <ul className={styles.list}>
+            <li className={styles.item}>
+              All of classic Wordle{"'"}s rules, but,
+            </li>
+            <li className={styles.item}>
+              Wordles get{" "}
+              <span className={styles.emphasis_yellow}>more challenging</span>{" "}
+              with every stage you beat.
+            </li>
+            <li className={styles.item}>
+              Leftover guesses become{" "}
+              <span className={styles.emphasis_green}>bonus guesses</span> for
+              the next stage.
+            </li>
+          </ul>
+
+          <div className={styles.row}>
+            {["R", "E", "A", "D", "Y", "?"].map((letter, i) => (
+              <div key={i} className={styles.letter}>
+                {letter}
+              </div>
+            ))}
           </div>
-          <button
-            className={modalStyles.retry}
-            disabled={!showGameLoseModal}
-            onClick={() => {
-              setShowGameLoseModal(false);
-              handleGameLose();
-            }}
-            id="retry_button"
-          >
-            Retry!
-          </button>
+          <Link href="/short">
+            <div className={`${styles.subtitle} ${styles.link}`}>
+              Start playing!
+            </div>
+          </Link>
         </div>
-      </BackgroundBlur>
 
-      <BackgroundBlur
-        header="finish!"
-        open={showGameWinModal}
-        setOpen={(open: boolean) => {
-          setShowGameWinModal(open);
-        }}
-        color="green"
-      >
-        <div className={modalStyles.body}>
-          <h2 className={modalStyles.short}>Short</h2>
-          <h3 className={modalStyles.stage}>
-            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
+        <div className={styles.section}>
+          <h1 className={styles.title}>Tips</h1>
+          <ul className={styles.list}>
+            <li className={styles.item}>
+              Games come in three difficulties:{" "}
+              <span className={styles.emphasis_green}>Short</span>,{" "}
+              <span className={styles.emphasis_yellow}>Medium</span>, and{" "}
+              <span className={styles.emphasis_red}>Long</span>. Change
+              difficulties in the top right corner.
+            </li>
+            <li className={styles.item}>
+              Don{"'"}t wait a day to play again. Just reload the page to start
+              a new game!
+            </li>
+          </ul>
+
+          <p className={styles.paragraph}>(Oh, and have fun!)</p>
+        </div>
+
+        <div className={styles.section}>
+          <h1 className={styles.title}>How It Was Built</h1>
+          <h3 className={styles.subtitle}>
+            Beg NY Times for their Wordle code.
           </h3>
-          <button
-            className={modalStyles.restart}
-            disabled={!showGameWinModal}
-            onClick={() => {
-              setShowGameWinModal(false);
-            }}
-            id="restart_button"
-          >
-            View Game
-          </button>
         </div>
-      </BackgroundBlur>
-
-      <main className={styles.content}>
-        <Board
-          numGuesses={numGuesses}
-          extraGuesses={extraGuesses}
-          currentGuess={guess}
-          prevGuesses={prevGuesses}
-          addGuess={handleAddGuess}
-          resetGuess={resetGuess}
-          enableInput={enableInput}
-          disableInput={disableInput}
-          gameStatus={gameStatus}
-        />
-      </main>
-      <p>Answer: {answer}</p>
+      </div>
     </>
   );
 }

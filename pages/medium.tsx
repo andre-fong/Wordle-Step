@@ -210,7 +210,6 @@ export default function Medium() {
           gameStatus={gameStatus}
         />
       </main>
-      <p>Answer: {answer}</p>
     </>
   );
 }

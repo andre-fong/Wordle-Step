@@ -10,11 +10,11 @@ import modalStyles from "@/styles/BackgroundBlur.module.scss";
 
 type GameStatus = "progress" | "win" | "lose" | "end";
 
-export default function Long() {
-  const startingLength: number = parseInt(Object.keys(gameConfig["long"])[0]);
+export default function Short() {
+  const startingLength: number = parseInt(Object.keys(gameConfig["short"])[0]);
   const [answerLength, setAnswerLength] = useState<number>(startingLength);
   const [numGuesses, setNumGuesses] = useState<number>(
-    gameConfig["long"][answerLength] || 0
+    gameConfig["short"][answerLength] || 0
   );
   const { guess, resetGuess, enableInput, disableInput } =
     useKeyboardInput(answerLength);
@@ -33,14 +33,14 @@ export default function Long() {
   // Reset board state and generate new answer when answer length changes
   useEffect(() => {
     if (answerLength === -1) setAnswerLength(startingLength);
-    else if (gameConfig["long"][answerLength] === undefined) {
+    else if (gameConfig["short"][answerLength] === undefined) {
       // Game cleared
       setGameStatus("end");
     } else {
       setPrevGuesses([]);
       setGameStatus("progress");
       generateAnswer(answerLength);
-      setNumGuesses(gameConfig["long"][answerLength] || 0);
+      setNumGuesses(gameConfig["short"][answerLength] || 0);
       enableInput();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +56,7 @@ export default function Long() {
       disableInput();
 
       // Get current level
-      const levels = Object.keys(gameConfig.long).map((key) => parseInt(key));
+      const levels = Object.keys(gameConfig.short).map((key) => parseInt(key));
       const answerLength = answer.length;
       setStageDisplayed(
         levels.findIndex((level) => level === answerLength) + 1
@@ -98,7 +98,7 @@ export default function Long() {
   function handleAddGuess(guess: string) {
     if (guess === answer) {
       setGameStatus(
-        gameConfig.long[answerLength + 1] === undefined ? "end" : "win"
+        gameConfig.short[answerLength + 1] === undefined ? "end" : "win"
       );
     } else if (prevGuesses.length === numGuesses - 1 + extraGuesses)
       setGameStatus("lose");
@@ -109,7 +109,7 @@ export default function Long() {
   return (
     <>
       <Head>
-        <title>Wordle Step Long</title>
+        <title>Wordle Step Classic</title>
       </Head>
 
       <BackgroundBlur
@@ -150,9 +150,9 @@ export default function Long() {
         color="gray"
       >
         <div className={modalStyles.body}>
-          <h2 className={modalStyles.long}>Long</h2>
+          <h2 className={modalStyles.short}>Short</h2>
           <h3 className={modalStyles.stage}>
-            Stage {stageDisplayed}/{Object.keys(gameConfig.long).length}
+            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
           </h3>
           <div className={modalStyles.fail_stats}>
             <p className={modalStyles.stat}>Answer: {answer}</p>
@@ -180,9 +180,9 @@ export default function Long() {
         color="green"
       >
         <div className={modalStyles.body}>
-          <h2 className={modalStyles.long}>Long</h2>
+          <h2 className={modalStyles.short}>Short</h2>
           <h3 className={modalStyles.stage}>
-            Stage {stageDisplayed}/{Object.keys(gameConfig.long).length}
+            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
           </h3>
           <button
             className={modalStyles.restart}

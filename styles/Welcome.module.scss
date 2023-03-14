@@ -1,0 +1,114 @@
+@import "variables.scss";
+
+.content {
+  padding: 10px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 70px;
+}
+
+.section {
+  max-width: 500px;
+}
+.section:not(:last-child) {
+  padding-bottom: 40px;
+  border-bottom: 2px solid lightgray;
+}
+
+.title {
+  font-family: "Gloock", serif;
+  font-size: 1.7em;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-family: "Gloock", serif;
+  font-size: 1.2em;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.list {
+  list-style-position: outside;
+  margin-bottom: 30px;
+}
+
+.item {
+  margin-bottom: 5px;
+  line-height: 27px;
+}
+
+.emphasis_yellow {
+  color: $yellow;
+  font-weight: bold;
+}
+.emphasis_green {
+  color: $green;
+  font-weight: bold;
+}
+.emphasis_red {
+  color: $red;
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: underline;
+  color: $green;
+  filter: brightness(0.7);
+}
+.link:active {
+  filter: brightness(1);
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-bottom: 15px;
+  user-select: none;
+}
+
+.letter {
+  border: 2px solid lightgray;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(30px * 2/3);
+  font-weight: bold;
+  box-sizing: border-box;
+  padding-bottom: 2px;
+
+  background-color: $green;
+  color: white;
+  border-color: $green;
+}
+
+.correct {
+  animation: reveal-correct 4.5s forwards;
+  animation-iteration-count: infinite;
+}
+
+@keyframes reveal-correct {
+  0% {
+    transform: scaleY(1);
+  }
+  5% {
+    transform: scaleY(0);
+  }
+  10% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.paragraph {
+  margin-bottom: 0;
+}
