@@ -1,0 +1,170 @@
+@import "@/styles/variables.scss";
+
+.content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(171, 171, 171, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  opacity: 0;
+  transition: opacity 1.2s;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 11;
+  background-color: white;
+  border-radius: 30px;
+  padding: 40px 50px;
+}
+
+.header {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter {
+  border: 2px solid lightgray;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(50px * 2/3);
+  font-weight: bold;
+  box-sizing: border-box;
+  padding-bottom: 5px;
+
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.green {
+  background-color: $green;
+  border: $green;
+  color: white;
+}
+.yellow {
+  background-color: $yellow;
+  border: $yellow;
+  color: white;
+}
+.gray {
+  background-color: gray;
+  border: gray;
+  color: white;
+}
+
+.bonus {
+  margin: 0;
+  color: $green;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.next_stage, .retry, .restart {
+  border: 0;
+  background-color: $green;
+  color: white;
+  margin: 0;
+  margin-top: 50px;
+  width: 80%;
+  padding: 10px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2em;
+  font-family: "Gloock", serif;
+}
+.retry {
+  background-color: $yellow;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.snake {
+  animation: jump 3s normal;
+  animation-delay: 0.5s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-15px);
+  }
+  20% {
+    transform: translateY(0);
+  }
+}
+
+.stat {
+  font-size: 1.2em;
+  font-weight: 500;
+  margin-top: 30px;
+}
+
+.short, .medium, .long {
+  font-weight: bold;
+  font-size: 1.6em;
+  margin: 0;
+}
+.short {
+  color: $green;
+}
+.medium {
+  color: $yellow;
+}
+.long {
+  color: $red;
+}
+
+.stats, .fail_stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stats {
+  color: $green;
+}
+.fail_stats {
+  color: $red;
+}
+
+.stage {
+  margin: 0;
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 500px) {
+  .modal {
+    padding: 40px 20px;
+  }
+}

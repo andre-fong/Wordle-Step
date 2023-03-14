@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import useKeyboardInput from "@/utils/useKeyboardInput";
 import { useAnswer } from "@/components/AnswerContext";
 import { gameConfig } from "@/utils/gameConfig";
+import BackgroundBlur from "@/components/BackgroundBlur";
+import modalStyles from "@/styles/BackgroundBlur.module.scss";
 
 type GameStatus = "progress" | "win" | "lose" | "end";
 
@@ -19,8 +21,14 @@ export default function Home() {
   const [prevGuesses, setPrevGuesses] = useState<string[]>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>("progress");
   const [extraGuesses, setExtraGuesses] = useState<number>(0);
+  const [bonusDisplayed, setBonusDisplayed] = useState<number>(0);
+  const [stageDisplayed, setStageDisplayed] = useState<number>(1);
 
   const { answer, generateAnswer } = useAnswer();
+
+  const [showRoundWinModal, setShowRoundWinModal] = useState<boolean>(false);
+  const [showGameWinModal, setShowGameWinModal] = useState<boolean>(false);
+  const [showGameLoseModal, setShowGameLoseModal] = useState<boolean>(false);
 
   // Reset board state and generate new answer when answer length changes
   useEffect(() => {
@@ -35,7 +43,6 @@ export default function Home() {
       setNumGuesses(gameConfig["short"][answerLength] || 0);
       enableInput();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answerLength]);
 
@@ -43,31 +50,57 @@ export default function Home() {
   useEffect(() => {
     if (gameStatus === "end") {
       disableInput();
-      alert("You win! Reload to restart.");
+      setStageDisplayed((prevStage) => prevStage + 1);
+      setShowGameWinModal(true);
     } else if (gameStatus !== "progress") {
       disableInput();
-      alert(gameStatus === "win" ? "Round won!" : "Game lost! Restarting...");
 
-      setTimeout(() => {
-        // Increase or restart answer length depending on win/lose
-        setAnswerLength((answerLength) =>
-          gameStatus === "win" ? answerLength + 1 : -1
-        );
-        // Set extra guesses depending if lost or won round
-        if (gameStatus === "win")
-          setExtraGuesses(
-            (prevExtra) => numGuesses + prevExtra - prevGuesses.length
-          );
-        else if (gameStatus === "lose") setExtraGuesses(0);
-      }, 1500);
+      // Get current level
+      const levels = Object.keys(gameConfig.short).map((key) => parseInt(key));
+      const answerLength = answer.length;
+      setStageDisplayed(
+        levels.findIndex((level) => level === answerLength) + 1
+      );
+
+      if (gameStatus === "win") {
+        setShowRoundWinModal(true);
+        setBonusDisplayed(numGuesses + extraGuesses - prevGuesses.length);
+      } else if (gameStatus === "lose") {
+        setShowGameLoseModal(true);
+        setBonusDisplayed(0);
+      }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameStatus]);
 
+  // Focus buttons when modal opens
+  useEffect(() => {
+    if (showRoundWinModal)
+      document.getElementById("next_stage_button")?.focus();
+    if (showGameLoseModal) document.getElementById("retry_button")?.focus();
+    if (showGameWinModal) document.getElementById("restart_button")?.focus();
+  }, [showRoundWinModal, showGameLoseModal, showGameWinModal]);
+
+  // Handle round win and close modal clicked
+  function handleRoundEnd() {
+    // Increase answer length and set extra guesses
+    setExtraGuesses((prevExtra) => numGuesses + prevExtra - prevGuesses.length);
+    setAnswerLength((answerLength) => answerLength + 1);
+  }
+
+  // Handle game lose and close modal clicked
+  function handleGameLose() {
+    setStageDisplayed(1);
+    setExtraGuesses(0);
+    setAnswerLength(-1);
+  }
+
   function handleAddGuess(guess: string) {
-    if (guess === answer) setGameStatus("win");
-    else if (prevGuesses.length === numGuesses - 1 + extraGuesses)
+    if (guess === answer) {
+      setGameStatus(
+        gameConfig.short[answerLength + 1] === undefined ? "end" : "win"
+      );
+    } else if (prevGuesses.length === numGuesses - 1 + extraGuesses)
       setGameStatus("lose");
 
     setPrevGuesses((prevGuesses) => [...prevGuesses, guess]);
@@ -78,6 +111,91 @@ export default function Home() {
       <Head>
         <title>Wordle Step Classic</title>
       </Head>
+
+      <BackgroundBlur
+        header="nice!"
+        open={showRoundWinModal}
+        setOpen={(open: boolean) => {
+          setShowRoundWinModal(open);
+        }}
+        color="yellow"
+      >
+        <div className={modalStyles.body}>
+          <p
+            className={modalStyles.bonus}
+            style={{ visibility: bonusDisplayed ? "inherit" : "hidden" }}
+          >
+            +{bonusDisplayed} bonus guess{bonusDisplayed === 1 ? "" : "es"}
+          </p>
+          <button
+            className={modalStyles.next_stage}
+            disabled={!showRoundWinModal}
+            onClick={() => {
+              setShowRoundWinModal(false);
+              handleRoundEnd();
+            }}
+            id="next_stage_button"
+          >
+            Stage {stageDisplayed + 1}
+          </button>
+        </div>
+      </BackgroundBlur>
+
+      <BackgroundBlur
+        header="fail"
+        open={showGameLoseModal}
+        setOpen={(open: boolean) => {
+          setShowGameLoseModal(open);
+        }}
+        color="gray"
+      >
+        <div className={modalStyles.body}>
+          <h2 className={modalStyles.short}>Short</h2>
+          <h3 className={modalStyles.stage}>
+            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
+          </h3>
+          <div className={modalStyles.fail_stats}>
+            <p className={modalStyles.stat}>Answer: {answer}</p>
+          </div>
+          <button
+            className={modalStyles.retry}
+            disabled={!showGameLoseModal}
+            onClick={() => {
+              setShowGameLoseModal(false);
+              handleGameLose();
+            }}
+            id="retry_button"
+          >
+            Retry!
+          </button>
+        </div>
+      </BackgroundBlur>
+
+      <BackgroundBlur
+        header="finish!"
+        open={showGameWinModal}
+        setOpen={(open: boolean) => {
+          setShowGameWinModal(open);
+        }}
+        color="green"
+      >
+        <div className={modalStyles.body}>
+          <h2 className={modalStyles.short}>Short</h2>
+          <h3 className={modalStyles.stage}>
+            Stage {stageDisplayed}/{Object.keys(gameConfig.short).length}
+          </h3>
+          <button
+            className={modalStyles.restart}
+            disabled={!showGameWinModal}
+            onClick={() => {
+              setShowGameWinModal(false);
+            }}
+            id="restart_button"
+          >
+            View Game
+          </button>
+        </div>
+      </BackgroundBlur>
 
       <main className={styles.content}>
         <Board
