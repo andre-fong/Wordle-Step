@@ -3,14 +3,36 @@
 .content {
   padding: 10px 30px;
   display: flex;
+  justify-content: center;
+  padding-bottom: 70px;
+  gap: 50px;
+}
+
+.anchors {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  gap: 15px;
+  padding: 15px 10px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid gray;
+}
+
+.anchor {
+  text-decoration: underline;
+}
+
+.sections_container {
+  display: flex;
   flex-direction: column;
   align-items: center;
+  width: clamp(200px, 80%, 500px);
   gap: 10px;
-  padding-bottom: 70px;
 }
 
 .section {
-  max-width: 500px;
+  width: 100%;
 }
 .section:not(:last-child) {
   padding-bottom: 40px;
@@ -22,6 +44,7 @@
   font-size: 1.7em;
   margin-top: 20px;
   margin-bottom: 5px;
+  letter-spacing: 1px;
 }
 
 .subtitle {
@@ -54,13 +77,16 @@
   font-weight: bold;
 }
 
-.link {
+.link, .blue_link {
   text-decoration: underline;
   color: $green;
   filter: brightness(0.7);
 }
-.link:active {
+.link:active, .blue_link:active {
   filter: brightness(1);
+}
+.blue_link {
+  color: #0000FF;
 }
 
 .row {
@@ -111,4 +137,16 @@
 
 .paragraph {
   margin-bottom: 0;
+  line-height: 27px;
+}
+
+.subheading {
+  font-family: "Gloock", serif;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.technology {
+  font-weight: 600;
 }

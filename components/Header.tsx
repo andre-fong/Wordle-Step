@@ -65,7 +65,9 @@ export default function Header() {
         </div>
       ) : width && width <= 300 ? (
         <>
-          <h1 className={styles.title}>Wordle Step</h1>
+          <Link href="/">
+            <h1 className={styles.title}>Wordle Step</h1>
+          </Link>
           <div className={styles.info}>
             <div className={styles.stage}>
               {currentStage}/{totalStages}
@@ -84,7 +86,9 @@ export default function Header() {
           <div className={styles.stage}>
             Stage {currentStage}/{totalStages}
           </div>
-          <h1 className={styles.title}>Wordle Step</h1>
+          <Link href="/">
+            <h1 className={styles.title}>Wordle Step</h1>
+          </Link>
           <button
             className={handleGameLengthColor(gameLength)}
             title="Game length"
