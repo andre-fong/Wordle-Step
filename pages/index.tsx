@@ -287,6 +287,16 @@ export default function Welcome() {
                 Wordle answers are relatively common words, may tweak if
                 difficulty or word variance is lacking
               </li>
+              <li className={styles.item}>
+                <a
+                  className={styles.blue_link}
+                  href="https://github.com/andre-fong/Wordle-Step/tree/main"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  GitHub repo
+                </a>
+              </li>
             </ul>
           </div>
         </div>
