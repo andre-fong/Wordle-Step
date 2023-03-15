@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import styles from "@/styles/Welcome.module.scss";
 import Head from "next/head";
 import Link from "next/link";
+import useScreenSize from "@/utils/useScreenSize";
 
 export default function Welcome() {
   useEffect(() => {
@@ -13,6 +14,8 @@ export default function Welcome() {
       }, 200 * i);
     });
   });
+
+  const { width } = useScreenSize();
 
   return (
     <>
@@ -76,7 +79,10 @@ export default function Welcome() {
       </Head>
 
       <div className={styles.content}>
-        <div className={styles.anchors}>
+        <div
+          className={styles.anchors}
+          style={{ display: width && width <= 400 ? "none" : "flex" }}
+        >
           <a className={styles.anchor} href="#how_to_play">
             How To Play
           </a>
