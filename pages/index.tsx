@@ -81,7 +81,7 @@ export default function Welcome() {
       <div className={styles.content}>
         <div
           className={styles.anchors}
-          style={{ display: width && width <= 400 ? "none" : "flex" }}
+          style={{ display: !width || width <= 400 ? "none" : "flex" }}
         >
           <a className={styles.anchor} href="#how_to_play">
             How To Play
