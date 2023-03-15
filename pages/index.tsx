@@ -15,8 +15,6 @@ export default function Welcome() {
     });
   });
 
-  const { width } = useScreenSize();
-
   return (
     <>
       <Head>
@@ -79,10 +77,7 @@ export default function Welcome() {
       </Head>
 
       <div className={styles.content}>
-        <div
-          className={styles.anchors}
-          style={{ display: !width || width <= 400 ? "none" : "flex" }}
-        >
+        <div className={styles.anchors}>
           <a className={styles.anchor} href="#how_to_play">
             How To Play
           </a>

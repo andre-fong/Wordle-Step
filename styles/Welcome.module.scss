@@ -9,7 +9,7 @@
 }
 
 .anchors {
-  display: none;
+  display: flex;
   flex-direction: column;
   height: fit-content;
   gap: 15px;
@@ -17,6 +17,12 @@
   margin-top: 20px;
   border-radius: 10px;
   border: 1px solid gray;
+}
+
+@media (max-width: 400px) {
+  .anchors {
+    display: none;
+  }
 }
 
 .anchor {
