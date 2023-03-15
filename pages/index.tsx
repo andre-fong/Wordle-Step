@@ -18,6 +18,61 @@ export default function Welcome() {
     <>
       <Head>
         <title>Wordle Step - Home</title>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+
+        {/* Facebook Meta Tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://wordle-step.vercel.app/" />
+        <meta
+          property="og:title"
+          content="Wordle Step - A word game with levels"
+        />
+        <meta
+          property="og:description"
+          content="Guess the Wordle(s) in 6 tries or less... or more? A Wordle spinoff game with levels."
+        />
+        <meta
+          property="og:image"
+          content="https://wordle-step.vercel.app/wordle-banner.png"
+        />
+        {/* Twitter Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="wordle-step.vercel.app/" />
+        <meta
+          property="twitter:url"
+          content="https://wordle-step.vercel.app/"
+        />
+        <meta
+          name="twitter:title"
+          content="Wordle Step - A word game with levels"
+        />
+        <meta
+          name="twitter:description"
+          content="Guess the Wordle(s) in 6 tries or less... or more? A Wordle spinoff game with levels."
+        />
+        <meta
+          name="twitter:image"
+          content="https://wordle-step.vercel.app/wordle-banner.png"
+        />
       </Head>
 
       <div className={styles.content}>
